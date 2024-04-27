@@ -1,4 +1,4 @@
-package raisetech.StudentManagement2;
+package raisetech.StudentManagement2.controller;
 
 
 import org.springframework.web.bind.annotation.GetMapping;
