@@ -1,4 +1,5 @@
-package raisetech.StudentManagement2.repository;
+package raisetech.StudentManagement.repository;
+
 
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
@@ -6,53 +7,70 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import raisetech.StudentManagement2.data.Student;
-import raisetech.StudentManagement2.data.StudentsCourses;
+import raisetech.StudentManagement.data.Student;
+import raisetech.StudentManagement.data.StudentCourse;
 
 /**
- * 受講生情報を扱うリポジトリ
- *
- * 全件検索や単一条件での検索、コース情報の検索が行えるクラスです。
+ * 受講生テーブルと受講生コース情報テーブルと紐づくRepositoryです。
  */
 @Mapper
 public interface StudentRepository {
 
   /**
-   * 全件検索
+   * 受講生の全件検索を行います。
    *
-   * @return 全件検索した受講生情報の一覧
+   * @return 受講生一覧(全研)
    */
-  @Select("SELECT * FROM students")
   List<Student> search();
 
-  @Select("SELECT * FROM students where studentId = #{studentId}")
+  /**
+   * 受講生の検索を行います。
+   * @param studentId 受講生ID
+   * @return　受講生
+   */
   Student searchStudent(String studentId);
 
-  @Select("SELECT * FROM students_courses")
-  List<StudentsCourses> searchStudentsCoursesList();
+  /**
+   * 受講生のコース情報の全件検索を行います。
+   *
+   * @return 受講生のコース情報(全件)
+   */
+  List<StudentCourse> searchStudentCourseList();
 
-  @Select("SELECT * FROM students_courses WHERE studentId = #{studentId}")
-  List<StudentsCourses> searchStudentCourse(String studentId);
+  /**
+   * 受講生IDに紐づく受講生のコース情報を検索します。
+   *
+   * @param studentId 受講生ID
+   * @return 受講生IDに紐づく受講生コース情報
+   */
+  List<StudentCourse> searchStudentCourse(String studentId);
 
-  // INSERT文の書き方注意
-  @Insert("INSERT INTO students (name, kana, nickname, mail, area, age, sex, remark, is_deleted)"
-      + " VALUE(#{name}, #{kana}, #{nickname}, #{mail}, #{area}, #{age}, #{sex}, #{remark}, false)")
-  //MyBatis用の設定、studentIdについて
-  @Options(useGeneratedKeys = true,keyProperty = "studentId")
+  /**
+   * 受講生を新規登録します。IDに関しては自動採番を行います。
+   *
+   * @param student 受講生
+   */
   void registerStudent(Student student);
 
-  @Insert("INSERT INTO students_courses (studentId, course_name, starting_date, scheduled_end_date)"
-      + " VALUE(#{studentId}, #{courseName}, #{startingDate}, #{scheduledEndDate})")
-  @Options(useGeneratedKeys = true,keyProperty = "courseId")
-  void registerStudentCourses(StudentsCourses studentsCourse);
+  /**
+   * 受講生コース情報を新規登録します。IDに関しては自動採番を行います。
+   * @param studentCourse 受講生コース情報
+   */
+  void registerStudentCourse(StudentCourse studentCourse);
 
-  // INSERT文の書き方注意
-  @Update("UPDATE students Set name = #{name}, kana = #{kana}, nickname = #{nickname},"
-      + " mail = #{mail}, area = #{area}, age = #{age}, sex = #{sex}, remark = #{remark}, is_deleted = #{deleted} WHERE studentId = #{studentId}")
-  //MyBatis用の設定、studentIdについて
+  /**
+   * 受講生を更新します。
+   *
+   * @param student 受講生
+   */
   void updateStudent(Student student);
 
-  @Update("UPDATE students_courses set course_name = #{courseName} WHERE courseId = #{courseId} ")
-  void updateStudentCourses(StudentsCourses studentsCourse);
+  /**
+   * 受講生コース情報のコース名を更新します。
+   *
+   * @param studentCourse 受講生コース情報
+   */
+  void updateStudentCourse(StudentCourse studentCourse);
 
 }
+
